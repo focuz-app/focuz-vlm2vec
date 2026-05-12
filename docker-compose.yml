@@ -1,0 +1,38 @@
+services:
+  vlm2vec-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: focuz-vlm2vec-server:latest
+    ports:
+      - "8000:8000"
+    environment:
+      MODEL_NAME: ${MODEL_NAME:-VLM2Vec/VLM2Vec-V2.0}
+      MODEL_BACKBONE: ${MODEL_BACKBONE:-qwen2_vl}
+      MODEL_LORA: ${MODEL_LORA:-true}
+      MODEL_NORMALIZE: ${MODEL_NORMALIZE:-true}
+      MODEL_POOLING: ${MODEL_POOLING:-last}
+      DEVICE: ${DEVICE:-cuda}
+      TORCH_DTYPE: ${TORCH_DTYPE:-bfloat16}
+      MAX_BATCH_SIZE: ${MAX_BATCH_SIZE:-16}
+      MAX_MEDIA_MB: ${MAX_MEDIA_MB:-128}
+      API_KEY: ${API_KEY:-}
+      HF_HOME: /cache/huggingface
+      TRANSFORMERS_CACHE: /cache/huggingface/transformers
+      NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility,video
+    volumes:
+      - hf-cache:/cache/huggingface
+    shm_size: "16gb"
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: ${GPU_COUNT:-1}
+              capabilities: [gpu]
+
+volumes:
+  hf-cache:
+

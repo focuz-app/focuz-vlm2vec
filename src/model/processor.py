@@ -17,7 +17,6 @@ from src.model.vlm_backbone.qwen2_vl import Qwen2VLForConditionalGeneration, Qwe
 from src.model.vlm_backbone.qwen2_vl_tokenselection import \
     Qwen2VLForConditionalGeneration as Qwen2VLTokenSelectionForConditionalGeneration, \
     Qwen2VLProcessor as Qwen2VLTokenSelectionProcessor
-from src.model.baseline_backbone.internvideo2.modeling_internvideo2 import InternVideo2_Stage2
 from src.model.vlm_backbone.qwen2_5_vl import Qwen2_5_VLForConditionalGeneration
 from src.model.vlm_backbone.qwen2_5_vl_tokenselection import \
     Qwen2_5_VLForConditionalGeneration as Qwen2_5_VL_TokenSelectionForConditionalGeneration
@@ -85,6 +84,15 @@ VLM_VIDEO_TOKENS = {
     E5_V: "<image>",
 }
 
+
+class _InternVideo2ModelProxy:
+    @classmethod
+    def from_pretrained(cls, *args, **kwargs):
+        from src.model.baseline_backbone.internvideo2.modeling_internvideo2 import InternVideo2_Stage2
+
+        return InternVideo2_Stage2.from_pretrained(*args, **kwargs)
+
+
 backbone2model = {
     PHI3V: Phi3VForCausalLM,
     LLAVA_NEXT: LlavaNextForConditionalGeneration,
@@ -92,7 +100,7 @@ backbone2model = {
     QWEN2_5_VL: Qwen2_5_VLForConditionalGeneration,
     QWEN2_VL_TOKENSELECTION: Qwen2VLTokenSelectionForConditionalGeneration,
     QWEN2_5_VL_TOKENSELECTION: Qwen2_5_VL_TokenSelectionForConditionalGeneration,
-    INTERNVIDEO2: InternVideo2_Stage2,
+    INTERNVIDEO2: _InternVideo2ModelProxy,
     E5_V: LlavaNextForConditionalGeneration,
 }
 

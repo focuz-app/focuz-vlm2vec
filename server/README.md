@@ -63,6 +63,18 @@ Use one worker. Each worker loads its own model copy, which wastes GPU memory.
 | `VIDEO_FPS` | `1.0` | Video frame sampling rate. |
 | `VIDEO_MAX_PIXELS` | `151200` | Max pixels passed to Qwen video preprocessing. |
 
+The Compose GPU reservation also accepts `NVIDIA_DEVICE_ID` on the host side. For MIG deployments, set it to the MIG UUID shown by `nvidia-smi -L`, for example:
+
+```bash
+NVIDIA_DEVICE_ID=MIG-2d8def8e-1c22-5493-9185-71da1202e4da docker compose up --build
+```
+
+If running Compose through `sudo`, either use a `.env` file or preserve the variable:
+
+```bash
+sudo -E docker compose up --build
+```
+
 ## API
 
 ### Health
